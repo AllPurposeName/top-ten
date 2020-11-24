@@ -9,5 +9,5 @@ class Answer < ApplicationRecord
     self.ranking ||= (self.class.in_category(category).maximum(:ranking) || 0) + 1
   end
 
-  scope :in_category, -> (category) { where(category: category) }
+  scope :in_category, -> (category = nil) { where(category: category) if category }
 end
