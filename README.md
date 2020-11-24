@@ -3,22 +3,13 @@
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
-Things you may want to cover:
 
-* Ruby version
+API Documentation
+Instead of adding living documentation with swagger or something, here are a
+list of documented endpoints
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+[Guesses](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/B12c_599v)
+[Categories](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/HkyZ695qP)
+[Users](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/r1bRa995w)
+[Errors](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/HkTuJj99D)
+[Answers](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/B1FSSc5qv) USE THIS TO CHEAT, you cheater
