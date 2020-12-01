@@ -14,6 +14,7 @@ class AnswersController < ApplicationController
   def filtered_category
     Category.find_by(name: strong_params[:category])
   end
+
   def strong_params
     params.permit(:category)
   end
