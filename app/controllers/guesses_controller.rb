@@ -6,6 +6,8 @@ class GuessesController < ApplicationController
       GuessBlueprint.render(guesses)
     end
     render json: blueprint, status: 200
+  rescue ErrorService::BasicError => error
+    render json: ErrorBlueprint.render(error), status: error.http_status_code
   end
 
   def create

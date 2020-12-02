@@ -6,6 +6,8 @@ class AnswersController < ApplicationController
       blueprint = AnswerBlueprint.render(answer)
       render json: blueprint
     end
+  rescue ErrorService::BasicError => error
+    render json: ErrorBlueprint.render(error), status: error.http_status_code
   end
 
   def index
@@ -15,6 +17,8 @@ class AnswersController < ApplicationController
       AnswerBlueprint.render(answers)
     end
     render json: blueprint
+  rescue ErrorService::BasicError => error
+    render json: ErrorBlueprint.render(error), status: error.http_status_code
   end
 
   def filtered_category
