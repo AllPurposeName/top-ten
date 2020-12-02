@@ -1,15 +1,19 @@
 class AnswersController < ApplicationController
   def show
     ensure_request_decoded
-    answer    = Answer.find_by(id: params[:id])
-    blueprint = AnswerBlueprint.render(answer)
-    render json: blueprint
+    Rails.cache.fetch("answers/#{params[:id]}", expires: 1.hour) do
+      answer    = Answer.find_by(id: params[:id])
+      blueprint = AnswerBlueprint.render(answer)
+      render json: blueprint
+    end
   end
 
   def index
     ensure_request_decoded
-    answers   = Answer.in_category(filtered_category).order(:category_id).order(:ranking)
-    blueprint = AnswerBlueprint.render(answers)
+    blueprint = Rails.cache.fetch("answers?filters[category]=#{strong_params[:category]}", expires: 1.hour) do
+      answers = Answer.in_category(filtered_category).order(:category_id).order(:ranking)
+      AnswerBlueprint.render(answers)
+    end
     render json: blueprint
   end
 

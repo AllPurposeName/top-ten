@@ -15,8 +15,8 @@ class MusicClient
     @client = client
   end
   def search(search_term:)
-
     Rails.logger.debug("Searching Music library for #{search_term}")
+    Rails.cache.fetch("music_search/#{search_term}", expires_in: 5.hours) do
     response = client.get(
       MUSIC_URL,
       params: { s: search_term }
@@ -29,7 +29,9 @@ class MusicClient
       publisher: artist['strLabel'],
       genre: artist['strGenre'],
     }
-  rescue RestClientError => error
+    end
+  rescue client::Exception => error
+    Rails.cache.delete("music_search/#{search_term}")
     raise MusicClientError, error.message
   end
 end
