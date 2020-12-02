@@ -52,6 +52,7 @@ class AuthedGuessService < GuessService
     guess.validate
     raise @@duplicate_guess_term_error          if guess.errors.of_kind?(:term, :taken)
     raise @@missing_search_term_error           if guess.errors.of_kind?(:term, :blank)
+
     raise @@correctly_guessed_same_answer_twice if answer_already_guessed(category: category, term: term)
     guess
   end
