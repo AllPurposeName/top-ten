@@ -54,11 +54,11 @@ RSpec.describe "Guesses", type: :request do
       let(:expected_message)     { 'The external music library could not be reached at this moment' }
       let(:expected_error_code)  { '101' }
       let(:expected_status_code) { 424 }
-      let!(:unanswered_answer) {Answer.create!(category: category_music, term: 'pink floyd') }
+      let!(:unanswered_answer)   { Answer.create!(category: category_music, term: 'pink floyd') }
       class FailingMusicClientMock
         MusicClientError = Class.new(ErrorService::BasicError) do
           define_method(:external_message) { 'The external music library could not be reached at this moment' }
-          define_method(:error_code) { '101' }
+          define_method(:error_code)       { '101' }
           define_method(:http_status_code) { 424 }
         end
         def search(search_term:)
@@ -72,6 +72,34 @@ RSpec.describe "Guesses", type: :request do
 
       subject(:make_request) do
         post '/guesses', params: { category: category_music.name, term: term }
+      end
+
+      it_behaves_like('errors are handled')
+    end
+
+    context 'video game client failure' do
+      let(:category_video_game) { Category.create!(name: 'video games') }
+      let(:expected_message)     { 'The external video game library could not be reached at this moment' }
+      let(:expected_error_code)  { '102' }
+      let(:expected_status_code) { 424 }
+      let!(:unanswered_answer)   { Answer.create!(category: category_video_game, term: 'spelunky') }
+      class FailingVideoGameClientMock
+        VideoGameClientError = Class.new(ErrorService::BasicError) do
+          define_method(:external_message) { 'The external video game library could not be reached at this moment' }
+          define_method(:error_code)       { '102' }
+          define_method(:http_status_code) { 424 }
+        end
+        def search(search_term:)
+          raise VideoGameClientError
+        end
+      end
+
+      before do
+        TopTen::Application.config.stub(:video_game_client).and_return('FailingVideoGameClientMock')
+      end
+
+      subject(:make_request) do
+        post '/guesses', params: { category: category_video_game.name, term: term }
       end
 
       it_behaves_like('errors are handled')

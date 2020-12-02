@@ -43,6 +43,7 @@ module TopTen
         routing_specs: false
     end
 
-    config.music_client = 'MusicClient'
+    config.music_client      = 'MusicClient'
+    config.video_game_client = 'VideoGameClient'
   end
 end

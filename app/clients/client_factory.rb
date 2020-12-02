@@ -10,6 +10,7 @@ class ClientFactory
   def clients
     {
       'music' => TopTen::Application.config.music_client.constantize,
+      'video games' => TopTen::Application.config.video_game_client.constantize,
     }
   end
 end
