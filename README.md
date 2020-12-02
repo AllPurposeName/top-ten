@@ -1,6 +1,6 @@
 # README
 
-The app is [hosted on heroku](https://guess-my-top-ten.herokuapp.com/)
+The app is hosted on heroku: https://guess-my-top-ten.herokuapp.com/
 
 ### Concept
 I recently completely a take home project very similar to this one, so I decided to spice
