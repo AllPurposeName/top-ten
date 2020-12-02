@@ -77,6 +77,21 @@ RSpec.describe "Guesses", type: :request do
       it_behaves_like('errors are handled')
     end
 
+    context 'authed user correctly guesses same answer twice' do
+      let(:user) { User.create!(name: 'Karl', public_key: '1', private_key: 'a') }
+      let(:variant_term) { 'the beat alls' }
+      let(:answer) { Answer.create!(category: category_music, term: 'the beatles', variants: [variant_term]) }
+      let!(:existing_user_answer) { UserAnswer.create!(user_id: user.id, answer_id: answer.id) }
+      subject(:make_request) do
+        post '/guesses', params: { category: category_music.name, term: variant_term, user_name: user.name }
+      end
+      let(:expected_message)     { 'You already correctly guessed that answer! Try again. This guess did not count against you.' }
+      let(:expected_error_code)  { '005' }
+      let(:expected_status_code) { 409 }
+
+      it_behaves_like('errors are handled')
+    end
+
     context 'when signing a request' do
       let(:user) { User.create!(name: 'Derek Yu', public_key: '1', private_key: 'a') }
       let(:authorization) do

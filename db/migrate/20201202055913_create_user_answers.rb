@@ -1,8 +1,8 @@
 class CreateUserAnswers < ActiveRecord::Migration[6.0]
   def change
-    create_join_table :users, :answers do |t|
-      t.index :user_id
-      t.index :answer_id
+    create_table :user_answers do |t|
+      t.references :user
+      t.references :answer
     end
   end
 end
