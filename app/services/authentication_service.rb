@@ -1,10 +1,10 @@
 class AuthenticationService
   PRIVATE_KEY = '1234'
 
-  cattr_reader :bad_authentication_error do ErrorService.build(
+  cattr_reader :bad_authorization_error do ErrorService.build(
     name: 'BadAuthenticationError',
     base: 'AuthError',
-    message: 'Your authentication key does not match ours. Ensure you read the readme!',
+    message: 'Your authorization key does not match ours. Ensure you read the readme!',
     code: '201',
     http_status_code: 403
   )
@@ -29,6 +29,6 @@ class AuthenticationService
         (strong_params.to_json + ':' + user.public_key)
       )
     )
-    raise @@bad_authentication_error unless ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, authorization)
+    raise @@bad_authorization_error unless ActiveSupport::SecurityUtils.secure_compare(calculated_hmac, authorization)
   end
 end

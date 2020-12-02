@@ -10,8 +10,8 @@ RSpec.describe "Guesses", type: :request do
         post '/guesses', params: { term: term }
       end
 
-      let(:expected_message) { 'Category needs to be supplied' }
-      let(:expected_error_code) { '001' }
+      let(:expected_message)     { 'Category needs to be supplied' }
+      let(:expected_error_code)  { '001' }
       let(:expected_status_code) { 422 }
       it_behaves_like('errors are handled')
     end
@@ -21,8 +21,8 @@ RSpec.describe "Guesses", type: :request do
       subject(:make_request) do
         post '/guesses', params: { category: category_music.name, term: term }
       end
-      let(:expected_message) { 'You have already guessed that term' }
-      let(:expected_error_code) { '002' }
+      let(:expected_message)     { 'You have already guessed that term' }
+      let(:expected_error_code)  { '002' }
       let(:expected_status_code) { 409 }
       it_behaves_like('errors are handled')
     end
@@ -32,8 +32,8 @@ RSpec.describe "Guesses", type: :request do
         post '/guesses', params: { category: category_music.name }
       end
 
-      let(:expected_message) { 'Term needs to be supplied' }
-      let(:expected_error_code) { '003' }
+      let(:expected_message)     { 'Term needs to be supplied' }
+      let(:expected_error_code)  { '003' }
       let(:expected_status_code) { 422 }
       it_behaves_like('errors are handled')
     end
@@ -44,15 +44,15 @@ RSpec.describe "Guesses", type: :request do
         post '/guesses', params: { category: (category_dog_breeds.name), term: term }
       end
 
-      let(:expected_message) { "We do not support that category. Try one of #{ClientFactory.new.categories}" }
-      let(:expected_error_code) { '004' }
+      let(:expected_message)     { "We do not support that category. Try one of #{ClientFactory.new.categories}" }
+      let(:expected_error_code)  { '004' }
       let(:expected_status_code) { 422 }
       it_behaves_like('errors are handled')
     end
 
     context 'music client failure' do
-      let(:expected_message) { 'The external music library could not be reached at this moment' }
-      let(:expected_error_code) { '101' }
+      let(:expected_message)     { 'The external music library could not be reached at this moment' }
+      let(:expected_error_code)  { '101' }
       let(:expected_status_code) { 424 }
       let!(:unanswered_answer) {Answer.create!(category: category_music, term: 'pink floyd') }
       class FailingMusicClientMock
@@ -75,6 +75,56 @@ RSpec.describe "Guesses", type: :request do
       end
 
       it_behaves_like('errors are handled')
+    end
+
+    context 'when signing a request' do
+      let(:user) { User.create!(name: 'Derek Yu', public_key: '1', private_key: 'a') }
+      let(:authorization) do
+        calculated_hmac = Base64.strict_encode64(
+          OpenSSL::HMAC.digest(
+            'sha256',
+            user.private_key,
+            ({ category: category_music.name, term: term }.to_json + ':' + user.public_key)
+          )
+        )
+      end
+
+      before do
+        TopTen::Application.config.stub(:authentication_service).and_return('AuthenticationService')
+      end
+
+      context 'without a valid user' do
+        subject(:make_request) do
+          post '/guesses', params: { category: category_music.name, term: term }, headers: { authorization: authorization }
+        end
+
+        let(:expected_message)     { 'No user name provided. Please provide one in the query parameters' }
+        let(:expected_error_code)  { '202' }
+        let(:expected_status_code) { 403 }
+
+        it_behaves_like('errors are handled')
+      end
+
+      context 'without a valid signed message' do
+        let(:bad_authorization) do
+          calculated_hmac = Base64.strict_encode64(
+            OpenSSL::HMAC.digest(
+              'sha256',
+              user.private_key,
+              (user.public_key + ':' + { category: category_music.name, term: term }.to_json)
+            )
+          )
+        end
+        subject(:make_request) do
+          post '/guesses', params: { category: category_music.name, term: term, user_name: user.name }, headers: { authorization: bad_authorization }
+        end
+
+        let(:expected_message)     { 'Your authorization key does not match ours. Ensure you read the readme!' }
+        let(:expected_error_code)  { '201' }
+        let(:expected_status_code) { 403 }
+
+        it_behaves_like('errors are handled')
       end
     end
   end
+end

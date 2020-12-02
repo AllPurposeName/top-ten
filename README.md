@@ -17,8 +17,9 @@ list of documented endpoints
 
 ### Users and Request Signing
 
-To create a user, follow the API documentation above. On subsequent calls add
-the query parameter `user_name=`
+To create a user, follow the API documentation above. Keep in mind Keys are only
+available in the response to the user POST response. Write it down or make
+another user. On subsequent calls add the query parameter `user_name=`
 
 Override this feature by using the header `Authorization=nah`
 
