@@ -2,7 +2,7 @@ class GuessesController < ApplicationController
   def index
     ensure_request_decoded
     blueprint = Rails.cache.fetch("guesses?filters[category]=#{strong_params[:category]}&sort_on=#{sort_on}&sort_direction=#{sort_direction}", expires: 1.hour) do
-      guesses   = Guess.in_category(filtered_category).reorder(sort_on => sort_direction)
+      guesses = Guess.in_category(filtered_category).reorder(sort_on => sort_direction)
       GuessBlueprint.render(guesses)
     end
     render json: blueprint, status: 200

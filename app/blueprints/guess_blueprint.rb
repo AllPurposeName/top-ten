@@ -3,7 +3,7 @@ class GuessBlueprint < Blueprinter::Base
   field :correct
 
 
-  association :results, blueprint: ResultBlueprint do |_guess, options|
+  association :results, blueprint: ResultBlueprint, if: -> (_res, _guess, options) { options[:results] } do |_guess, options|
     options[:results]
   end
 
