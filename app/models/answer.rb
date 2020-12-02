@@ -10,7 +10,7 @@ class Answer < ApplicationRecord
   end
 
   scope :in_category, -> (category = nil) { where(category: category) if category }
-  scope :unguessed_for_cateogry, -> (category = nil) do
+  scope :unguessed_for_category, -> (category = nil) do
     answers = arel_table
     where(category: category)
       .where(

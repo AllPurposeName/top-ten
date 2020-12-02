@@ -60,19 +60,20 @@ class GuessService
     raise @@duplicate_guess_term_error if guess.errors.of_kind?(:term, :taken)
     raise @@missing_search_term_error  if guess.errors.of_kind?(:term, :blank)
 
-    return victory(guess, category) if all_answers_guessed?(category: category)
+    return results(guess: guess, category: category, victory: true) if all_answers_guessed?(category: category)
+
     correct_answer = correct?(guess: guess, category: category)
     if correct_answer
       guess.correct = true
       search_term = correct_answer.term
     else
       guess.correct = false
-      hint_answer = Answer.unguessed_for_cateogry(category).sample
+      hint_answer = Answer.unguessed_for_category(category).sample
       search_term = hint_answer.term
     end
     guess.save
 
-    results(guess, category, search_term)
+    results(guess: guess, category: category, search_term: search_term)
     {
       guess: guess,
       wrapper: {
@@ -98,7 +99,7 @@ class GuessService
       end
     {
       guess: guess,
-      results: {request_results,
+      results: request_results,
       wrapper: {
         guess_count: category.guesses.count,
         correct_count: category.guesses.where(correct: true).count,
