@@ -52,7 +52,8 @@ class AuthedGuessService < GuessService
     guess.validate
     raise @@duplicate_guess_term_error          if guess.errors.of_kind?(:term, :taken)
     raise @@missing_search_term_error           if guess.errors.of_kind?(:term, :blank)
-    raise @@correctly_guessed_same_answer_twice if answers_already_guessed(category: category)
+
+    raise @@correctly_guessed_same_answer_twice if answer_already_guessed(category: category, term: term)
     guess
   end
 
@@ -73,6 +74,10 @@ class AuthedGuessService < GuessService
         correctly_guessed: user.answers.in_category(category).pluck(:term),
       },
     }
+  end
+
+  def answer_already_guessed(category:, term:)
+    answers_already_guessed(category: category).find_by("? = ANY(variants) or answers.term = ?", term, term)
   end
 
   def answers_already_guessed(category:)
