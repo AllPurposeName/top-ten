@@ -25,13 +25,6 @@ ActiveRecord::Schema.define(version: 2020_12_02_055913) do
     t.index ["category_id"], name: "index_answers_on_category_id"
   end
 
-  create_table "answers_users", id: false, force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "answer_id", null: false
-    t.index ["answer_id"], name: "index_answers_users_on_answer_id"
-    t.index ["user_id"], name: "index_answers_users_on_user_id"
-  end
-
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", precision: 6, null: false
@@ -47,6 +40,13 @@ ActiveRecord::Schema.define(version: 2020_12_02_055913) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["category_id"], name: "index_guesses_on_category_id"
     t.index ["user_id"], name: "index_guesses_on_user_id"
+  end
+
+  create_table "user_answers", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "answer_id"
+    t.index ["answer_id"], name: "index_user_answers_on_answer_id"
+    t.index ["user_id"], name: "index_user_answers_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

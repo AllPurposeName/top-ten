@@ -17,7 +17,7 @@ class Answer < ApplicationRecord
     where(category: category)
       .where(
         answers[:term].not_in(
-          Guess.where(category: category).pluck(:term)
+          Guess.where(category: category, user_id: nil).pluck(:term)
         )
       )
   end
@@ -26,7 +26,7 @@ class Answer < ApplicationRecord
     where(category: category)
       .where(
         answers[:term].in(
-          Guess.where(category: category).pluck(:term)
+          Guess.where(category: category, user_id: nil).pluck(:term)
         )
       )
   end

@@ -43,64 +43,28 @@ class GuessService
     @term          = term&.downcase&.chomp
   end
 
-  def self.guess!(parameters)
-    new(
-      category_name: parameters[:category],
-      term:          parameters[:term]
-    ).guess!
+  def self.guess!(category:, term:, user:)
+    guesser = new(
+      category_name: :category,
+      term:          :term,
+      user:          :user
+    )
+    if user
+      authenticated_guess
+    else
+      unauthenticated_guess
+    end
   end
 
-  def guess!
+  def set_category
     category = Category.find_by(name: category_name)
     raise @@missing_category_error       unless category
     raise @@category_not_supported_error unless CLIENT_FACTORY.categories.include?(category_name)
-
-    guess = Guess.new(term: term, category: category)
-    guess.validate
-    raise @@duplicate_guess_term_error if guess.errors.of_kind?(:term, :taken)
-    raise @@missing_search_term_error  if guess.errors.of_kind?(:term, :blank)
-
-    return results(guess: guess, category: category, victory: true) if all_answers_guessed?(category: category)
-
-    correct_answer = correct?(guess: guess, category: category)
-    if correct_answer
-      guess.correct = true
-      search_term = correct_answer.term
-    else
-      guess.correct = false
-      hint_answer = Answer.unguessed_for_category(category).sample
-      search_term = hint_answer.term
-    end
-    guess.save
-
-    results(guess: guess, category: category, search_term: search_term)
+    category
   end
 
   def correct?(guess:, category:)
     category.answers.find_by("? = ANY(variants) or answers.term = ?", term, term)
     # add user_answers exclusivity to prevent `the black kids` and `black kids` from both being correct
-  end
-
-  def results(guess:, category:, search_term: nil, victory: false)
-    request_results =
-      if victory
-        {}
-      else
-        CLIENT_FACTORY.build(category_name: category_name).search(search_term: search_term)
-      end
-    {
-      guess: guess,
-      results: request_results,
-      wrapper: {
-        guess_count: category.guesses.count,
-        correct_count: category.guesses.where(correct: true).count,
-        correct_remaining: category.answers.count - category.guesses.where(correct: true).count,
-        correctly_guessed: Answer.guessed_for_category(category).pluck(:term),
-      },
-    }
-  end
-
-  def all_answers_guessed?(category:)
-    category.answers.count - category.guesses.where(correct: true).count <= 0
   end
 end
