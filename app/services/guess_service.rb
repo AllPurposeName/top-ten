@@ -74,15 +74,6 @@ class GuessService
     guess.save
 
     results(guess: guess, category: category, search_term: search_term)
-    {
-      guess: guess,
-      wrapper: {
-        guess_count: category.guesses.count,
-        correct_count: category.guesses.where(correct: true).count,
-        correct_remaining: category.answers.count - category.guesses.where(correct: true).count,
-        correctly_guessed: Answer.guessed_for_category(category).pluck(:term),
-      },
-    }
   end
 
   def correct?(guess:, category:)

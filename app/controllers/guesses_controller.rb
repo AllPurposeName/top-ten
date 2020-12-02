@@ -1,11 +1,13 @@
 class GuessesController < ApplicationController
   def index
+    ensure_request_decoded
     guesses   = Guess.all
     blueprint = GuessBlueprint.render(guesses)
-    render json: blueprint
+    render json: blueprint, status: 200
   end
 
   def create
+    ensure_request_decoded
     guess     = GuessService.guess!(strong_params)
     blueprint = GuessWrapperBlueprint.render(
       guess[:wrapper],

@@ -23,6 +23,7 @@ class MusicClient
     )
 
     artist = JSON.parse(response.body)['artists'].first
+
     {
       name: artist['strArtist'],
       publisher: artist['strLabel'],

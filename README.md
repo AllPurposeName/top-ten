@@ -4,7 +4,7 @@ This README would normally document whatever steps are necessary to get the
 application up and running.
 
 
-API Documentation
+### API Documentation
 Instead of adding living documentation with swagger or something, here are a
 list of documented endpoints
 
@@ -13,3 +13,25 @@ list of documented endpoints
 [Users](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/r1bRa995w)
 [Errors](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/HkTuJj99D)
 [Answers](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/B1FSSc5qv) USE THIS TO CHEAT, you cheater
+
+
+### Users and Request Signing
+
+To create a user, follow the API documentation above. Keep in mind Keys are only
+available in the response to the user POST response. Write it down or make
+another user. On subsequent calls add the query parameter `user_name=`
+
+Override this feature by using the header `Authorization=nah`
+
+If you intend to try out request signing instead do this in a ruby terminal:
+
+```ruby
+body = {
+term: 'the beatles',
+category: 'music',
+}
+
+signed_message = body.to_json + ':' + my_public_key
+Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', my_private_key,
+signed_message))
+```

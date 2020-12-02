@@ -3,4 +3,5 @@ Rails.application.routes.draw do
 
   resources :answers, only: [:index, :show]
   resources :guesses, only: [:index, :create]
+  resources :users,   only: [:create]
 end
