@@ -1,5 +1,7 @@
 class Answer < ApplicationRecord
   belongs_to :category
+  has_many :user_answers
+  has_many :users, through: :user_answers
 
   validates :term, presence: true, uniqueness: { scope: :category }
 

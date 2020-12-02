@@ -15,14 +15,22 @@ list of documented endpoints
 [Answers](https://hackmd.io/@3EsXNN0gSKqG4L5xr7fj1A/B1FSSc5qv) USE THIS TO CHEAT, you cheater
 
 
-### Request signing
+### Users and Request Signing
 
-Use this in a ruby terminal
+To create a user, follow the API documentation above. On subsequent calls add
+the query parameter `user_name=`
 
+Override this feature by using the header `Authorization=nah`
+
+If you intend to try out request signing instead do this in a ruby terminal:
+
+```ruby
 body = {
 term: 'the beatles',
 category: 'music',
 }
 
-key = body.to_json + ':' + my_public_key
-Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', my_private_key, key))
+signed_message = body.to_json + ':' + my_public_key
+Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', my_private_key,
+signed_message))
+```
