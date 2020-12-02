@@ -1,9 +1,11 @@
 class GuessService
+  CLIENT_FACTORY = ClientFactory.new
   cattr_reader :missing_category_error do ErrorService.build(
     name: 'MissingCategoryError',
     base: 'GuessError',
     message: 'Category needs to be supplied',
-    code: '001'
+    code: '001',
+    http_status_code: 422
   )
   end
 
@@ -11,7 +13,8 @@ class GuessService
     name: 'DuplicateGuessTermError',
     base: 'GuessError',
     message: 'You have already guessed that term',
-    code: '002'
+    code: '002',
+    http_status_code: 409
   )
   end
 
@@ -19,15 +22,17 @@ class GuessService
     name: 'MissingSearchTermError',
     base: 'GuessError',
     message: 'Term needs to be supplied',
-    code: '003'
+    code: '003',
+    http_status_code: 422
   )
   end
 
   cattr_reader :category_not_supported_error do ErrorService.build(
     name: 'CategoryNotSupportedError',
     base: 'GuessError',
-    message: "We do not support that category. Try one of #{ClientFactory.categories}",
-    code: '004'
+    message: "We do not support that category. Try one of #{CLIENT_FACTORY.categories}",
+    code: '004',
+    http_status_code: 422
   )
   end
 
@@ -48,7 +53,7 @@ class GuessService
   def guess!
     category = Category.find_by(name: category_name)
     raise @@missing_category_error       unless category
-    raise @@category_not_supported_error unless ClientFactory.categories.include?(category_name)
+    raise @@category_not_supported_error unless CLIENT_FACTORY.categories.include?(category_name)
 
     guess = Guess.new(term: term, category: category)
     guess.validate
@@ -89,7 +94,7 @@ class GuessService
       if victory
         {}
       else
-        ClientFactory.build(category_name: category_name).search(search_term: search_term)
+        CLIENT_FACTORY.build(category_name: category_name).search(search_term: search_term)
       end
     {
       guess: guess,

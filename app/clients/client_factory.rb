@@ -1,13 +1,15 @@
 class ClientFactory
-  CLIENTS = {
-    'music' => const_get(TopTen::Application.config.music_client),
-  }
-
-  def self.build(category_name:)
-    CLIENTS[category_name].new
+  def build(category_name:)
+    clients[category_name].new
   end
 
-  def self.categories
-    CLIENTS.keys
+  def categories
+    clients.keys
+  end
+
+  def clients
+    {
+      'music' => TopTen::Application.config.music_client.constantize,
+    }
   end
 end

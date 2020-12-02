@@ -3,7 +3,8 @@ class MusicClient
     name: 'MusicClientFailureError',
     base: 'ClientError',
     message: 'The external music library could not be reached at this moment',
-    code: '101'
+    code: '101',
+    http_status_code: 424
   )
   end
 
