@@ -21,6 +21,8 @@ but I thought this would keep it speedy for testing out the actual different
 scenarios.
 
 ### Features
+I didn't write the most detailed commit messages, so I kept the branches in tact so you can follow my train of thought. The most recent branch is `final-touches`
+
 Of the requested features I have:
 * A README (woohoo)
 * A table called guesses that has a scoped uniqueness constraint
