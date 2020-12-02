@@ -6,6 +6,7 @@ class GuessesController < ApplicationController
   end
 
   def create
+    authentication_service.decode_request_signature!(strong_params: strong_params, authorization: request.authorization)
     guess     = GuessService.guess!(strong_params)
     blueprint = GuessWrapperBlueprint.render(
       guess[:wrapper],
