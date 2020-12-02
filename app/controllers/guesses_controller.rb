@@ -7,10 +7,14 @@ class GuessesController < ApplicationController
 
   def create
     guess     = GuessService.guess!(strong_params)
-    blueprint = GuessBlueprint.render(guess)
+    blueprint = GuessWrapperBlueprint.render(
+      guess[:wrapper],
+      guess: guess[:guess],
+      results: guess[:results]
+    )
     render json: blueprint
   rescue ErrorService::BasicError => error
-    render json: ErrorBlueprint.render(error)
+    render json: ErrorBlueprint.render(error) # add http status code error.http_status_code
   end
 
   def strong_params
