@@ -16,7 +16,8 @@ class GuessesController < ApplicationController
     blueprint = GuessWrapperBlueprint.render(
       guess[:wrapper],
       guess: guess[:guess],
-      results: guess[:results]
+      results: guess[:results],
+      victory: guess[:victory]
     )
     render json: blueprint, status: 201
   rescue ErrorService::BasicError => error
