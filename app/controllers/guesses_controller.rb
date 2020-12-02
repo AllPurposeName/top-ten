@@ -8,7 +8,11 @@ class GuessesController < ApplicationController
 
   def create
     ensure_request_decoded
-    guess     = GuessService.guess!(strong_params)
+    guess     = GuessFactory.guess!(
+      category: strong_params[:category],
+      term: strong_params[:term],
+      user: current_user
+    )
     blueprint = GuessWrapperBlueprint.render(
       guess[:wrapper],
       guess: guess[:guess],
