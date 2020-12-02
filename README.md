@@ -25,7 +25,7 @@ Of the requested features I have:
 * A README
 * A table called guesses that has a scoped uniqueness constraint
 * RESTful endpoints
-* Very basic sorting and filtering
+* Very basic filtering
 * Valid JSON
 * Robust error handling
 * Request specs focused on unhappy paths
