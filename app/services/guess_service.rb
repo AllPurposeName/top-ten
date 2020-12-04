@@ -62,9 +62,5 @@ class GuessService
     raise @@category_not_supported_error unless CLIENT_FACTORY.categories.include?(category_name)
     category
   end
-
-  def correct?(guess:, category:)
-    category.answers.find_by("? = ANY(variants) or answers.term = ?", term, term)
-    # add user_answers exclusivity to prevent `the black kids` and `black kids` from both being correct
   end
 end
