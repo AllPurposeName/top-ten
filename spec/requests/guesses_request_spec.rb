@@ -55,13 +55,14 @@ RSpec.describe "Guesses", type: :request do
       let(:expected_error_code)  { '101' }
       let(:expected_status_code) { 424 }
       let!(:unanswered_answer)   { Answer.create!(category: category_music, term: 'pink floyd') }
+
       class FailingMusicClientMock
         MusicClientError = Class.new(ErrorService::BasicError) do
           define_method(:external_message) { 'The external music library could not be reached at this moment' }
           define_method(:error_code)       { '101' }
           define_method(:http_status_code) { 424 }
         end
-        def search(search_term:)
+        def search (*args)
           raise MusicClientError
         end
       end

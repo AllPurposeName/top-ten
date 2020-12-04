@@ -62,5 +62,4 @@ class GuessService
     raise @@category_not_supported_error unless CLIENT_FACTORY.categories.include?(category_name)
     category
   end
-  end
 end
