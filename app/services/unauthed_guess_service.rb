@@ -11,7 +11,7 @@ class UnauthedGuessService < GuessService
     ) if all_answers_guessed?(category: category)
 
     search_term = mark_correct(guess, category)
-    results(guess: guess, category: category, search_term: search_term)
+    results(guess: guess, category: category, search_term: search_term, victory: all_answers_guessed?(category: category))
   end
 
   def set_guess(category)
@@ -33,11 +33,12 @@ class UnauthedGuessService < GuessService
       guess: guess,
       results: request_results,
       wrapper: {
-        guess_count: category.guesses.count,
-        correct_count: category.guesses.where(correct: true).count,
+        guess_count: category.guesses.where(user_id: nil).count,
+        correct_count: category.guesses.where(correct: true, user_id: nil).count,
         correct_remaining: answers_not_yet_guessed(category: category).count,
         correctly_guessed: Answer.guessed_for_category(category).pluck(:term),
       },
+      victory: victory,
     }
   end
 

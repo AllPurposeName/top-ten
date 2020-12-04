@@ -27,7 +27,7 @@ class AuthedGuessService < GuessService
     ) if all_answers_guessed?(category: category)
 
     search_term  = mark_correct(guess, category)
-    results(guess: guess, category: category, search_term: search_term)
+    results(guess: guess, category: category, search_term: search_term, victory: all_answers_guessed?(category: category))
   end
 
   def mark_correct(guess, category)
@@ -40,7 +40,6 @@ class AuthedGuessService < GuessService
       guess.correct = false
       hint_answer   = answers_not_yet_guessed(category: category).sample
       search_term   = hint_answer.term
-      # add hint
     end
     guess.save
 
@@ -72,6 +71,7 @@ class AuthedGuessService < GuessService
         correct_remaining: answers_not_yet_guessed(category: category).count,
         correctly_guessed: user.answers.in_category(category).pluck(:term),
       },
+      victory: victory,
     }
   end
 

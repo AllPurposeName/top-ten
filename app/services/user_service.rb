@@ -24,7 +24,7 @@ class UserService
     user.public_key = SecureRandom.hex
     user.private_key = SecureRandom.hex
     user.validate
-    raise @@user_name_not_unique_error if user.errors.of_kind?(:name, :uniqueness)
+    raise @@user_name_not_unique_error if user.errors.of_kind?(:name, :taken)
     user.save
     user
   end
