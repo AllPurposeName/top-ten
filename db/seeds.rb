@@ -9,9 +9,9 @@ Answer.create!(category: music, term: 'keane', variants: ['whiney english band']
 Answer.create!(category: music, term: 'the lightning seeds', variants: ['whiney english band 2'])
 Answer.create!(category: music, term: 'queen', variants: ['freddie mercury'])
 Answer.create!(category: music, term: 'electric light orchestra', variants: ['elo'])
-Answer.create!(category: music, term: 'the black kids', variants: [])
+Answer.create!(category: music, term: 'black kids', variants: ['the black kids'])
 Answer.create!(category: music, term: 'psy', variants: ['gangnam style'])
-Answer.create!(category: music, term: 'kevin macleod', variants: [])
+Answer.create!(category: music, term: 'tame impala', variants: [])
 puts 'Created music Answers'
 
 
